@@ -21,7 +21,7 @@ def test_download_creates_files(tmp_path):
         assert key in files, f"Missing dataset: {key}"
 
     # Check files actually exist and are not empty
-    for path in files.items():
+    for path in files.values():
         assert path.exists(), f"File not found: {path}"
         assert path.stat().st_size > 0, f"File is empty: {path}"
 
