@@ -73,19 +73,23 @@ pip install requests geopandas pandas pytest streamlit
 
 ## Usage
 
-### Run the Streamlit app
-
+### Download datasets
 ```bash
 python main.py
 ```
-
-The app will open in your browser at `http://localhost:8501`.
-
 ### Run the tests
 
 ```bash
-pytest
+python -m pytest
 ```
+
+### Run the Streamlit app
+
+```bash
+python -m streamlit run app/streamlit_app.py
+```
+
+The app will open in your browser.
 
 ## Code Overview
 
