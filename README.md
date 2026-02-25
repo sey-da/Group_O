@@ -6,9 +6,5 @@
   - Margarida Parracho, 75108@novasbe.pt
 ## Project Description
 Building a lightweight data analysis tool for use in environmental protection
-## Structure
-' downloads/' - Downloaded files
-' app/' - .py files
-' tests/' - notebook files here
 
 
