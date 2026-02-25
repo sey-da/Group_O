@@ -15,14 +15,15 @@ A lightweight environmental data analysis tool built during a two-day hackathon.
 Group_O/
 ├── app/
 │   ├── __init__.py
+|   └── class_environment_data.py
 │   └── data_handler.py
+│   └── streamlit_app.py
 ├── downloads/
 ├── notebooks/
 ├── tests/
 │   ├── test_download.py
 │   └── test_merge.py
 ├── .gitignore
-├── conftest.py
 ├── LICENSE.md
 ├── README.md
 └── main.py
@@ -89,8 +90,7 @@ pytest
 ## Code Overview
 
 ### `app/data_handler.py`
-
-Contains two functions and a class:
+Contains two functions:
 
 **`download_datasets(download_dir)`**
 Downloads all CSV datasets and the Natural Earth ZIP file into the specified directory. Returns a dictionary mapping dataset names to their local file paths.
@@ -98,8 +98,26 @@ Downloads all CSV datasets and the Natural Earth ZIP file into the specified dir
 **`merge_datasets(downloaded_files)`**
 Merges each downloaded CSV dataset with the Natural Earth world map using GeoPandas. The GeoDataFrame is always the left dataframe in the merge to preserve geometry. Returns a dictionary of merged GeoDataFrames.
 
-**`CLASS TBD`**
-XXX
+### `app/environment_data.py`
+Contains a Pydantic configuration model and the main data management class:
+
+**`EnvironmentConfig`**
+A Pydantic model that validates the configuration passed to `EnvironmentData`. Ensures the downloads directory exists, creating it automatically if needed.
+
+**`EnvironmentData`**
+Central data manager for the project. On instantiation, automatically calls `download_datasets()` and `merge_datasets()`, then exposes the five resulting GeoDataFrames as named attributes (`annual_change_forest_area`, `annual_deforestation`, `share_land_protected`, `share_land_degraded`, `forest_area_total`). Also provides `list_available_maps()` which returns all GeoDataFrames as a named dictionary for use in the Streamlit app.
+
+### `app/streamlit_app.py`
+The main user-facing application:
+
+**Dataset selector**
+A dropdown that allows the user to select one dataset at a time to explore.
+
+**World map**
+A choropleth map of the selected dataset, with countries colored by value and grey for missing data.
+
+**Country breakdown chart**
+A chart tailored to each dataset — showing top gainers vs losers for change-based datasets, top 10 worst offenders for deforestation, and top 5 vs bottom 5 for share-based datasets.
 
 ### `tests/`
 
@@ -111,11 +129,13 @@ XXX
 ## Requirements
 
 - Python 3.10+
-- requests
 - geopandas
 - pandas
-- pytest
+- requests
+- pydantic
 - streamlit
+- matplotlib
+- pytest
 
 ## License
 
