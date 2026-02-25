@@ -90,15 +90,17 @@ def merge_datasets(downloaded_files: dict[str, Path]) -> dict[str, gpd.GeoDataFr
     for name in dataset_keys:
         df = pd.read_csv(downloaded_files[name])
 
-        # Our World in Data uses "Entity" for country names
-        if "Entity" in df.columns:
-            df = df.rename(columns={"Entity": "NAME"})
+    # Normalize all column names to title case first
+    df.columns = [col.strip().title() for col in df.columns]
 
-        df["NAME"] = df["NAME"].str.strip()
+    # Our World in Data uses "Entity" for country names 
+    if "Entity" in df.columns:
+        df = df.rename(columns={"Entity": "NAME"})
 
-        # Keep only the most recent year available
-        if "Year" in df.columns:
-            df = df[df["Year"] == df["Year"].max()]
+    df["NAME"] = df["NAME"].str.strip()
+
+    if "Year" in df.columns:
+        df = df[df["Year"] == df["Year"].max()]
 
         # Merge: world (left) with dataset (right)
         merged[name] = world.merge(df, on="NAME", how="left")
