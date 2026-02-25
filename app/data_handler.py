@@ -4,6 +4,8 @@ Data download and processing functions for Project Okavango.
 
 import requests
 from pathlib import Path
+import geopandas as gpd
+import pandas as pd
 
 
 # Dataset URLs from Our World in Data
@@ -56,3 +58,49 @@ def download_datasets(download_dir: str = "downloads") -> dict[str, Path]:
     downloaded_files["geodata"] = geo_path
 
     return downloaded_files
+
+
+
+def merge_datasets(downloaded_files: dict[str, Path]) -> dict[str, gpd.GeoDataFrame]:
+    """
+    Merge the downloaded CSV datasets with the Natural Earth world map.
+
+    The geopandas GeoDataFrame is always the left dataframe in the merge
+    to preserve geometry information. Country names are standardized
+    before merging to maximize matches.
+
+    Args:
+        downloaded_files: Dictionary mapping dataset names to their local
+                          file paths, as returned by download_datasets().
+
+    Returns:
+        Dictionary mapping dataset names to merged GeoDataFrames.
+    """
+    # Load the world map from the ZIP file
+    world = gpd.read_file(str(downloaded_files["geodata"]))
+
+    # Standardize country name column for merging
+    world["NAME"] = world["NAME"].str.strip()
+
+    merged: dict[str, gpd.GeoDataFrame] = {}
+
+    # All dataset keys except geodata
+    dataset_keys = [key for key in downloaded_files if key != "geodata"]
+
+    for name in dataset_keys:
+        df = pd.read_csv(downloaded_files[name])
+
+        # Our World in Data uses "Entity" for country names
+        if "Entity" in df.columns:
+            df = df.rename(columns={"Entity": "NAME"})
+
+        df["NAME"] = df["NAME"].str.strip()
+
+        # Keep only the most recent year available
+        if "Year" in df.columns:
+            df = df[df["Year"] == df["Year"].max()]
+
+        # Merge: world (left) with dataset (right)
+        merged[name] = world.merge(df, on="NAME", how="left")
+
+    return merged
