@@ -1,5 +1,5 @@
 from app.data_handler import download_datasets
-from app.environment_data import EnvironmentData
+from app.class_environment_data import EnvironmentData
 
 files = download_datasets()
 print(files)
@@ -10,4 +10,3 @@ maps = data.list_available_maps()
 
 for name, gdf in maps.items():
     print(name, "→", len(gdf), "rows")
-    
