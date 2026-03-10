@@ -68,7 +68,7 @@ source venv/bin/activate
 ### 3. Install dependencies
 
 ```bash
-pip install requests geopandas pandas pytest streamlit
+pip install requests geopandas pandas pytest streamlit pydantic matplotlib
 ```
 
 ## Usage
