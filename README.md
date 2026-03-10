@@ -47,7 +47,7 @@ All datasets are downloaded automatically from [Our World in Data](https://ourwo
 ### 1. Clone the repository
 
 ```bash
-git clone <https://github.com/sey-da/Group_O.git>
+git clone https://github.com/sey-da/Group_O.git
 cd Group_O
 ```
 
