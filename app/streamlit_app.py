@@ -161,55 +161,86 @@ st.title("🌍 Project Okavango — Environmental Data Explorer")
 data = load_data()
 maps = data.list_available_maps()
 
-
-# ─────────────────────────────────────────────────────────────
-# DATASET SELECTOR
-# ─────────────────────────────────────────────────────────────
-
-selected_name = st.selectbox(
-    label="Select a dataset to explore:",
-    options=list(maps.keys())
+page = st.sidebar.radio(
+    "Select Page",
+    ["Page 1 - Data Explorer", "Page 2 - Image Viewer"]
 )
 
-gdf = maps[selected_name]
-config = DATASET_CONFIG[selected_name]
-value_col = config["value_col"]
-label = config["label"]
+if page == "Page 1 - Data Explorer":
+    selected_name = st.selectbox(
+        label="Select a dataset to explore:",
+        options=list(maps.keys())
+    )
+
+    gdf = maps[selected_name]
+    config = DATASET_CONFIG[selected_name]
+    value_col = config["value_col"]
+    label = config["label"]
 
 
-# ─────────────────────────────────────────────────────────────
-# WORLD MAP
-# ─────────────────────────────────────────────────────────────
+    # ─────────────────────────────────────────────────────────────
+    # WORLD MAP
+    # ─────────────────────────────────────────────────────────────
 
-st.subheader(f"🗺️ World Map — {selected_name}")
+    st.subheader(f"🗺️ World Map — {selected_name}")
 
-fig, ax = plt.subplots(1, 1, figsize=(18, 8))
-gdf.plot(
-    column=value_col,
-    ax=ax,
-    legend=True,
-    legend_kwds={"label": label, "orientation": "horizontal"},
-    cmap=config["cmap"],
-    missing_kwds={"color": "lightgrey", "label": "No data"},
-    edgecolor="black",
-    linewidth=0.3
-)
-ax.set_title(selected_name, fontsize=14)
-ax.axis("off")
-st.pyplot(fig)
+    fig, ax = plt.subplots(1, 1, figsize=(18, 8))
+    gdf.plot(
+        column=value_col,
+        ax=ax,
+        legend=True,
+        legend_kwds={"label": label, "orientation": "horizontal"},
+        cmap=config["cmap"],
+        missing_kwds={"color": "lightgrey", "label": "No data"},
+        edgecolor="black",
+        linewidth=0.3
+    )
+    ax.set_title(selected_name, fontsize=14)
+    ax.axis("off")
+    st.pyplot(fig)
 
 
-# ─────────────────────────────────────────────────────────────
-# CHART — specific to each dataset
-# ─────────────────────────────────────────────────────────────
+    # ─────────────────────────────────────────────────────────────
+    # CHART — specific to each dataset
+    # ─────────────────────────────────────────────────────────────
 
-st.subheader(f"📊 {selected_name} — Country Breakdown")
+    st.subheader(f"📊 {selected_name} — Country Breakdown")
 
-chart_type = config["chart_type"]
+    chart_type = config["chart_type"]
 
-if chart_type == "gainers_losers":
-    chart_gainers_losers(gdf, value_col, label, selected_name)
-elif chart_type == "top_only":
-    chart_top_only(gdf, value_col, label, selected_name)
-elif chart_type == "top_bottom":
-    chart_top_bottom(gdf, value_col, label, selected_name)
+    if chart_type == "gainers_losers":
+        chart_gainers_losers(gdf, value_col, label, selected_name)
+    elif chart_type == "top_only":
+        chart_top_only(gdf, value_col, label, selected_name)
+    elif chart_type == "top_bottom":
+        chart_top_bottom(gdf, value_col, label, selected_name)
+
+elif page == "Page 2 - Image Viewer":
+
+    st.header("🛰️ Select Location for Satellite Image")
+
+    latitude = st.number_input(
+        "Latitude",
+        min_value=-90.0,
+        max_value=90.0,
+        value=0.0
+    )
+
+    longitude = st.number_input(
+        "Longitude",
+        min_value=-180.0,
+        max_value=180.0,
+        value=0.0
+    )
+
+    zoom = st.slider(
+        "Zoom Level",
+        min_value=1,
+        max_value=18,
+        value=10
+    )
+
+    st.write("Selected coordinates")
+    st.write("Latitude:", latitude)
+    st.write("Longitude:", longitude)
+    st.write("Zoom:", zoom)
