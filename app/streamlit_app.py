@@ -2,6 +2,10 @@
 Streamlit app for Project Okavango.
 Displays world maps and dataset-specific charts for environmental data.
 """
+import requests
+import math
+from PIL import Image
+from io import BytesIO
 
 import os
 import sys
@@ -248,3 +252,27 @@ elif page == "Page 2 - Image Viewer":
     st.write("Latitude:", latitude)
     st.write("Longitude:", longitude)
     st.write("Zoom:", zoom)
+
+    if st.button("Download Satellite Image"):
+
+        lat_rad = math.radians(latitude)
+        n = 2 ** zoom
+
+        xtile = int((longitude + 180.0) / 360.0 * n)
+        ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+
+        url = f"https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{zoom}/{ytile}/{xtile}"
+
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            image = Image.open(BytesIO(response.content))
+
+            filename = f"images/satellite_{latitude}_{longitude}_{zoom}.png"
+            image.save(filename)
+
+            st.success("Image downloaded successfully")
+            st.image(image)
+
+        else:
+            st.error("Image download failed")
