@@ -12,7 +12,7 @@ from pathlib import Path
 import geopandas as gpd
 from pydantic import BaseModel, field_validator
 
-from app.data_handler import download_datasets, merge_datasets
+from data_handler import download_datasets, merge_datasets
 
 class EnvironmentConfig(BaseModel):
     """

@@ -3,11 +3,15 @@ Streamlit app for Project Okavango.
 Displays world maps and dataset-specific charts for environmental data.
 """
 
+import os
+import sys
+
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-from app.class_environment_data import EnvironmentData
+sys.path.append(os.path.dirname(__file__))
+from class_environment_data import EnvironmentData
 
 
 # ─────────────────────────────────────────────────────────────
