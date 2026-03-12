@@ -53,10 +53,11 @@ cd Group_O
 
 ### 2. Create and activate a virtual environment
 
-**Windows (Command Prompt):**
+**Windows (PowerShell):**
 ```bash
 python -m venv venv
-venv\Scripts\activate.bat
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+venv\Scripts\activate
 ```
 
 **macOS / Linux:**
@@ -78,7 +79,7 @@ pip install requests geopandas pandas pytest streamlit pydantic matplotlib
 python main.py
 ```
 ### Run the tests
-**Windows (Command Prompt) / macOS / Linux:**
+**macOS / Linux:**
 ```bash
 pytest
 ```
@@ -90,7 +91,7 @@ python -m pytest
 
 ### Run the Streamlit app
 
-**Windows (Command Prompt) / macOS / Linux:**
+**macOS / Linux:**
 ```bash
 streamlit run app/streamlit_app.py
 ```
