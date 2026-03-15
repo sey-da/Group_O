@@ -179,64 +179,86 @@ elif page == "Page 2 - Image Viewer":
     st.write("Longitude:", longitude)
     st.write("Zoom:", zoom)
 
+    image_path = f"images/satellite_{latitude}_{longitude}_{zoom}.png"
+
     if st.button("Download Satellite Image"):
-        lat_rad = math.radians(latitude)
-        n = 2 ** zoom
-        xtile = int((longitude + 180.0) / 360.0 * n)
-        ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
-        url = f"https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{zoom}/{ytile}/{xtile}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            image = Image.open(BytesIO(response.content))
-            Path("images").mkdir(exist_ok=True)
-            filename = f"images/satellite_{latitude}_{longitude}_{zoom}.png"
-            image.save(filename)
-            st.success("Image downloaded successfully")
-            st.image(image)
+        if Path(image_path).exists():
+            st.info("Image already downloaded for these coordinates.")
+            st.image(image_path, caption="Satellite Image")
         else:
-            st.error("Image download failed")
+            lat_rad = math.radians(latitude)
+            n = 2 ** zoom
+            xtile = int((longitude + 180.0) / 360.0 * n)
+            ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+            url = f"https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{zoom}/{ytile}/{xtile}"
+            response = requests.get(url)
+            if response.status_code == 200:
+                image = Image.open(BytesIO(response.content))
+                Path("images").mkdir(exist_ok=True)
+                image.save(image_path)
+                st.success("Image downloaded successfully")
+                st.image(image, caption="Satellite Image")
+            else:
+                st.error("Image download failed")
 
     # ─────────────────────────────────────────────────────────
     # BUTTON TO RUN THE AI ANALYSIS
     # ─────────────────────────────────────────────────────────
 
-    if st.button("Analyse Area with AI"):         
-        image_path = f"images/satellite_{latitude}_{longitude}_{zoom}.png"
-
+    if st.button("Analyse Area with AI"):
         if not Path(image_path).exists():
             st.error("No image found for these coordinates. Please download the image first.")
         else:
-            ai = AIAnalysis(config_path="models.yaml") 
+            ai = AIAnalysis(config_path="models.yaml")
+            
+            # ── Check database first ──────────────────────────────
+            existing = ai.check_database(latitude, longitude, zoom)
+            
+            if existing:
+                st.info("ℹ️ Results found in database — skipping AI pipeline.")
+                st.subheader("Satellite Image and AI Description")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.image(image_path, caption="Satellite Image", width=500)
+                with col2:
+                    st.markdown("**AI Image Description:**")
+                    st.write(existing["image_description"])
+                st.subheader("Environmental Risk Assessment")
+                st.markdown("**Risk Analysis:**")
+                st.write(existing["text_description"])
+                if existing["danger"] == "Y":
+                    st.error("⚠️ ENVIRONMENTAL RISK DETECTED — This area may be at risk.")
+                else:
+                    st.success("✅ NO SIGNIFICANT RISK DETECTED — This area appears safe.")
 
-            st.subheader("Satellite Image and AI Description")
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.image(image_path, caption="Satellite Image", width=500)
-
-            with col2:
-                with st.spinner("Analysing image... (this may take 1-2 minutes)"):
-                    description = ai.describe_image(image_path)    
-                st.markdown("**AI Image Description:**")
-                st.write(description)
-
-            st.subheader("Environmental Risk Assessment")
-
-            with st.spinner("Assessing environmental risk..."):
-                result = ai.assess_environmental_risk(description)
-            ai.log_to_database(
-                latitude=latitude,
-                longitude=longitude,
-                zoom=zoom,
-                image_description=description,
-                text_response=result["response"],
-                danger=result["is_at_risk"]
-            )  
-
-            st.markdown("**Risk Analysis:**")
-            st.write(result["response"])
-
-            if result["is_at_risk"]:
-                st.error("⚠️ ENVIRONMENTAL RISK DETECTED — This area may be at risk.")
             else:
-                st.success("✅ NO SIGNIFICANT RISK DETECTED — This area appears safe.")   
+                # ── Run the full AI pipeline ──────────────────────
+                st.subheader("Satellite Image and AI Description")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.image(image_path, caption="Satellite Image", width=500)
+                with col2:
+                    with st.spinner("Analysing image... (this may take 1-2 minutes)"):
+                        description = ai.describe_image(image_path)
+                    st.markdown("**AI Image Description:**")
+                    st.write(description)
+
+                st.subheader("Environmental Risk Assessment")
+                with st.spinner("Assessing environmental risk..."):
+                    result = ai.assess_environmental_risk(description)
+
+                ai.log_to_database(
+                    latitude=latitude,
+                    longitude=longitude,
+                    zoom=zoom,
+                    image_description=description,
+                    text_response=result["response"],
+                    danger=result["is_at_risk"]
+                )
+
+                st.markdown("**Risk Analysis:**")
+                st.write(result["response"])
+                if result["is_at_risk"]:
+                    st.error("⚠️ ENVIRONMENTAL RISK DETECTED — This area may be at risk.")
+                else:
+                    st.success("✅ NO SIGNIFICANT RISK DETECTED — This area appears safe.")

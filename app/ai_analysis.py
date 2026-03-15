@@ -91,10 +91,10 @@ class AIAnalysis:
             "latitude": latitude,
             "longitude": longitude,
             "zoom": zoom,
-            "image_description": image_description.split(".")[0].strip(),
+            "image_description": image_description,
             "image_prompt": self.config["vision_model"]["prompt"].split(".")[0].strip(),
             "image_model": self.config["vision_model"]["name"],
-            "text_description": text_response.split(".")[0].strip(),
+             "text_description": text_response,
             "text_prompt": self.config["analysis_model"]["prompt"].split("\n")[0].strip(),
             "text_model": self.config["analysis_model"]["name"],
             "danger": "Y" if danger else "N"
@@ -104,3 +104,24 @@ class AIAnalysis:
             new_row.to_csv(csv_path, mode="a", header=False, index=False)
         else:
             new_row.to_csv(csv_path, index=False)
+
+    def check_database(self, latitude: float, longitude: float, zoom: int):
+        """
+        Check if the current coordinates and zoom already exist in the database.
+        Returns the existing row as a dict if found, or None if not found.
+        """
+        csv_path = Path("database") / "images.csv"
+        
+        if not csv_path.exists():
+            return None
+        
+        df = pd.read_csv(csv_path)
+        match = df[
+            (df["latitude"] == latitude) &
+            (df["longitude"] == longitude) &
+            (df["zoom"] == zoom)
+        ]
+        
+        if not match.empty:
+            return match.iloc[-1].to_dict()  # return most recent match
+        return None
