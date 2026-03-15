@@ -206,7 +206,7 @@ elif page == "Page 2 - Image Viewer":
         if not Path(image_path).exists():
             st.error("No image found for these coordinates. Please download the image first.")
         else:
-            ai = AIAnalysis(config_path="finalmodels.yaml")  
+            ai = AIAnalysis(config_path="models.yaml") 
 
             st.subheader("Satellite Image and AI Description")
             col1, col2 = st.columns(2)
