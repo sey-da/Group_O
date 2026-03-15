@@ -1,0 +1,11 @@
+vision_model:
+  name: "llava"  # common model for image and text analysis
+  prompt: "Describe this satellite image in detail, focusing on environmental aspects like vegetation, water bodies, urban sprawl, or soil degradation."
+
+analysis_model:
+  name: "llama3" # model foucused in logic and text
+  prompt: "Based on the following description of a geographical area, is there any sign of environmental danger (deforestation, pollution, drought, etc.)? Answer with 'YES' or 'NO' first, and then give a very brief reason."
+
+settings:
+  temperature: 0.2
+  pull_if_missing: true

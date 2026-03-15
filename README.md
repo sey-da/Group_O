@@ -68,7 +68,7 @@ source venv/bin/activate
 ### 3. Install dependencies
 
 ```bash
-pip install requests geopandas pandas pytest streamlit
+pip install requests geopandas pandas pytest streamlit pydantic matplotlib
 ```
 
 ## Usage
@@ -78,20 +78,24 @@ pip install requests geopandas pandas pytest streamlit
 python main.py
 ```
 ### Run the tests
+**Windows (Command Prompt) / macOS / Linux:**
 ```bash
 pytest
 ```
-or
+
+**Windows (PowerShell):**
 ```bash
 python -m pytest
 ```
 
 ### Run the Streamlit app
 
+**Windows (Command Prompt) / macOS / Linux:**
 ```bash
 streamlit run app/streamlit_app.py
 ```
-or
+
+**Windows (PowerShell):**
 ```bash
 python -m streamlit run app/streamlit_app.py
 ```
