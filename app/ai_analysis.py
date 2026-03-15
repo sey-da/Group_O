@@ -2,6 +2,10 @@ import base64
 import ollama
 import yaml
 import os
+import csv
+import datetime
+from pathlib import Path
+import pandas as pd
 
 class AIAnalysis:
     def __init__(self, config_path="models.yaml"):
@@ -76,3 +80,27 @@ class AIAnalysis:
             "response": response_text,
             "is_at_risk": is_at_risk
         }
+
+    def log_to_database(self, latitude, longitude, zoom, image_description, text_response, danger):
+        db_dir = Path("database")
+        db_dir.mkdir(exist_ok=True)
+        csv_path = db_dir / "images.csv"
+
+        new_row = pd.DataFrame([{
+            "timestamp": datetime.datetime.now().isoformat(),
+            "latitude": latitude,
+            "longitude": longitude,
+            "zoom": zoom,
+            "image_description": image_description.split(".")[0].strip(),
+            "image_prompt": self.config["vision_model"]["prompt"].split(".")[0].strip(),
+            "image_model": self.config["vision_model"]["name"],
+            "text_description": text_response.split(".")[0].strip(),
+            "text_prompt": self.config["analysis_model"]["prompt"].split("\n")[0].strip(),
+            "text_model": self.config["analysis_model"]["name"],
+            "danger": "Y" if danger else "N"
+        }])
+
+        if csv_path.exists():
+            new_row.to_csv(csv_path, mode="a", header=False, index=False)
+        else:
+            new_row.to_csv(csv_path, index=False)

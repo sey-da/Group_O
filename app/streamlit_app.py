@@ -223,7 +223,15 @@ elif page == "Page 2 - Image Viewer":
             st.subheader("Environmental Risk Assessment")
 
             with st.spinner("Assessing environmental risk..."):
-                result = ai.assess_environmental_risk(description)  
+                result = ai.assess_environmental_risk(description)
+            ai.log_to_database(
+                latitude=latitude,
+                longitude=longitude,
+                zoom=zoom,
+                image_description=description,
+                text_response=result["response"],
+                danger=result["is_at_risk"]
+            )  
 
             st.markdown("**Risk Analysis:**")
             st.write(result["response"])

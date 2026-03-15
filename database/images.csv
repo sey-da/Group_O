@@ -1,0 +1,2 @@
+timestamp,latitude,longitude,zoom,image_description,image_prompt,image_model,text_description,text_prompt,text_model,danger
+2026-03-15T23:16:03.864348,-5.68,-62.21,4,"The image presents a satellite view of a large, densely vegetated area",You are an environmental analyst,moondream,1,"You are an environmental risk analyst. Based on the following satellite image description, answer these questions:",llama3.2:1b,Y
