@@ -1,4 +1,5 @@
-# Group_O
+# Advanced Programming - Project Okavango - Group_O
+2612-Advanced Programming Course T3 at Nova SBE
  
 ## Team Members
  
