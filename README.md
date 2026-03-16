@@ -213,7 +213,32 @@ Configures the AI pipeline — model names, prompts, and settings for both the v
  
 ---
  
+## Examples of Environmental Risk Detection
 
+### Example 1 — Degraded Land in Sub-Saharan Africa
+Coordinates: latitude `12.5`, longitude `15.0`, zoom `10`
+
+The AI identified an arid, desert-like landscape with sparse vegetation, visible soil erosion, and signs of human activity. All four risk indicators were flagged as YES, and the pipeline correctly identified this area as **at environmental risk**.
+
+![Sub-Saharan Africa](screenshots/example1.png)
+
+---
+
+### Example 2 — Dense Forest in the Amazon
+Coordinates: latitude `-3.47`, longitude `-62.21`, zoom `10`
+
+Despite the image appearing very dark due to dense canopy cover, the AI described a lush green landscape with no visible signs of deforestation or urban development. However, the model flagged the area as at risk due to detected urbanization in the background — a known limitation of smaller vision models which can hallucinate details in low-contrast images.
+
+![Amazon](screenshots/example2.png)
+
+---
+
+### Example 3 — Mixed Forest and Urban Area, Central Europe
+Coordinates: latitude `47.8`, longitude `13.0`, zoom `12`
+
+The AI correctly identified a healthy, densely vegetated area with water bodies. Despite this, the model flagged the area as at environmental risk due to the presence of urban areas and land use change. This illustrates a known limitation of smaller models — larger models such as `llama3.1` or `mistral` would provide more accurate and nuanced assessments.
+
+![Central Europe](screenshots/example3.png)
  
 ---
  
