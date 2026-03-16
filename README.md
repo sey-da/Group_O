@@ -241,6 +241,22 @@ The AI correctly identified a healthy, densely vegetated area with water bodies.
 ![Central Europe](screenshots/example3.png)
  
 ---
+
+## SDGs — How This Project Contributes
+
+This project is associated with **SDG 6** (Clean Water and Sanitation), **SDG 13** (Climate Action), and **SDG 15** (Life on Land).
+
+Forests are among the most critical ecosystems on Earth, yet they are disappearing at an alarming rate. Project Okavango was built to make environmental data accessible as well as actionable, therefore it directly supports the United Nations' vision for a sustainable future.
+
+The most immediate connection is with SDG 15 (Life on Land). The app visualizes deforestation rates, land degradation, and protected area coverage across every country in the world. By presenting this data on an interactive map, it allows researchers, policymakers, and citizens to quickly identify where forest loss is accelerating and where conservation efforts are most urgently needed. The AI-powered satellite analysis on Page 2 goes one step further by enabling on-demand assessment of specific locations, making it possible to flag at-risk areas that might otherwise go unnoticed.
+
+The link to SDG 13 (Climate Action) is equally important. Forests store vast amounts of carbon, and their destruction releases greenhouse gases that accelerate climate change. Any tool that helps monitor and reduce deforestation is a tool for climate action. By making deforestation data visible and combining it with AI analysis, Project Okavango contributes to the kind of informed decision-making that climate action requires.
+
+Finally, SDG 6 (Clean Water and Sanitation) is connected through the relationship between forests and watersheds. Healthy forests regulate water cycles, prevent soil erosion, and maintain the quality of rivers and lakes. The land degradation dataset in our app highlights areas where this protective function may already be compromised, helping to identify regions where water resources are under threat.
+
+While Project Okavango is a proof of concept, it demonstrates how open data, geospatial analysis, and AI can be combined into a lightweight tool with real-world relevance. With larger models and higher-resolution data, a system like this could become a valuable component of global environmental monitoring efforts aligned with the UN's 2030 Agenda.
+
+---
  
 ## License
  
